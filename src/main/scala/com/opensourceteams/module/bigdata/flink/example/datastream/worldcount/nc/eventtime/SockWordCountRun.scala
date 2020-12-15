@@ -19,32 +19,17 @@ import org.apache.flink.util.Collector
 
 object SockWordCountRun {
 
-
-
   def main(args: Array[String]): Unit = {
-
-
-    // get the execution environment
-   // val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
-
 
     val configuration : Configuration = ConfigurationUtil.getConfiguration(true)
 
     val env:StreamExecutionEnvironment = StreamExecutionEnvironment.createLocalEnvironment(1,configuration)
-
-
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-
-
     import org.apache.flink.streaming.api.scala._
-    val dataStream = env.socketTextStream("localhost", 1234, '\n')
-
-     // .setParallelism(3)
-
+    val dataStream = env.socketTextStream("10.21.20.186", 1234, '\n')
 
     dataStream.assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarks[String] {
-
         val maxOutOfOrderness =  2 * 1000L // 3.5 seconds
         var currentMaxTimestamp: Long = _
         var currentTimestamp: Long = _
@@ -58,21 +43,12 @@ object SockWordCountRun {
           currentMaxTimestamp = Math.max(timestamp, currentMaxTimestamp)
           currentTimestamp = timestamp
 
-        /*  println("===========watermark begin===========")
-          println()
-          println(new Date(currentMaxTimestamp - 20 * 1000))
-          println(jsonObject)
-          println("===========watermark end===========")
-          println()*/
           timestamp
         }
-
       })
       .timeWindowAll(Time.seconds(3))
-
       .process(new ProcessAllWindowFunction[String,String,TimeWindow]() {
       override def process(context: Context, elements: Iterable[String], out: Collector[String]): Unit = {
-
 
         println()
         println("开始提交window")
@@ -83,13 +59,8 @@ object SockWordCountRun {
         println()
       }
     })
-
       .print()
       //.setParallelism(3)
-
-
-
-
 
     println("==================================以下为执行计划==================================")
     println("执行地址(firefox效果更好):https://flink.apache.org/visualizer")
@@ -97,13 +68,7 @@ object SockWordCountRun {
     println(env.getStreamGraph.getStreamingPlanAsJSON)
     println("==================================以上为执行计划 JSON串==================================\n")
 
-
     env.execute("Socket 水印作业")
-
-
-
-
-
 
     println("结束")
 

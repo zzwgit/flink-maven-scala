@@ -32,11 +32,7 @@ object ReadKafkaDataRun {
     val configuration : Configuration = ConfigurationUtil.getConfiguration(true)
 
     val env:StreamExecutionEnvironment = StreamExecutionEnvironment.createLocalEnvironment(1,configuration)
-
-
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
-    import org.apache.flink.streaming.api.scala._
-
 
     val properties = new Properties()
     properties.setProperty("bootstrap.servers", "localhost:9092")
@@ -45,10 +41,7 @@ object ReadKafkaDataRun {
     properties.setProperty("group.id", "test")
     import org.apache.flink.streaming.api.scala._
     env.addSource(new FlinkKafkaConsumer[String]("topic1", new SimpleStringSchema(), properties))
-
      // .setParallelism(3)
-
-
       .assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarks[String] {
 
         val maxOutOfOrderness =  1 * 1000L // 3.5 seconds
@@ -72,14 +65,10 @@ object ReadKafkaDataRun {
           println()*/
           timestamp
         }
-
-      })
+    })
       .timeWindowAll(Time.seconds(5))
-
       .process(new ProcessAllWindowFunction[String,String,TimeWindow]() {
       override def process(context: Context, elements: Iterable[String], out: Collector[String]): Unit = {
-
-
         println()
         println("开始提交window")
         println(new Date())
@@ -88,14 +77,8 @@ object ReadKafkaDataRun {
         println(new Date())
         println()
       }
-    })
-
-      .print()
+    }).print()
       //.setParallelism(3)
-
-
-
-
 
     println("==================================以下为执行计划==================================")
     println("执行地址(firefox效果更好):https://flink.apache.org/visualizer")
@@ -103,14 +86,7 @@ object ReadKafkaDataRun {
     println(env.getStreamGraph.getStreamingPlanAsJSON)
     println("==================================以上为执行计划 JSON串==================================\n")
 
-
     env.execute("读取kafka数据")
-
-
-
-
-
-
     println("结束")
 
   }
@@ -119,28 +95,6 @@ object ReadKafkaDataRun {
   // Data type for words with count
   case class WordWithCount(word: String, count: Long){
     //override def toString: String = Thread.currentThread().getName + word + " : " + count
-  }
-
-
-  def getConfiguration(isDebug:Boolean = false):Configuration = {
-
-    val configuration : Configuration = new Configuration()
-
-    if(isDebug){
-      val timeout = "100000 s"
-      val timeoutHeartbeatPause = "1000000 s"
-      configuration.setString("akka.ask.timeout",timeout)
-      configuration.setString("akka.lookup.timeout",timeout)
-      configuration.setString("akka.tcp.timeout",timeout)
-      configuration.setString("akka.transport.heartbeat.interval",timeout)
-      configuration.setString("akka.transport.heartbeat.pause",timeoutHeartbeatPause)
-      configuration.setString("akka.watch.heartbeat.pause",timeout)
-      configuration.setInteger("heartbeat.interval",10000000)
-      configuration.setInteger("heartbeat.timeout",50000000)
-    }
-
-
-    configuration
   }
 
 

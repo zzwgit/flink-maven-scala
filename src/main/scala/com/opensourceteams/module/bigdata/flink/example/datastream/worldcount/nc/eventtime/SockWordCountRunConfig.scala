@@ -17,29 +17,17 @@ import org.apache.flink.util.Collector
 
 object SockWordCountRunConfig {
 
-
-
   def main(args: Array[String]): Unit = {
 
-
     import org.apache.flink.streaming.api.scala._
-
     val configuration : Configuration = ConfigurationUtil.getConfiguration(true)
 
     val env:StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment;
     env.getConfig.setGlobalJobParameters(configuration)
-
-
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-
-
-
-    val dataStream = env.socketTextStream("localhost", 1234, '\n')
-
-
+    val dataStream = env.socketTextStream("10.21.20.186", 1234, '\n')
      // .setParallelism(3)
-
 
     dataStream.assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarks[String] {
 
@@ -56,15 +44,8 @@ object SockWordCountRunConfig {
           currentMaxTimestamp = Math.max(timestamp, currentMaxTimestamp)
           currentTimestamp = timestamp
 
-        /*  println("===========watermark begin===========")
-          println()
-          println(new Date(currentMaxTimestamp - 20 * 1000))
-          println(jsonObject)
-          println("===========watermark end===========")
-          println()*/
           timestamp
         }
-
       })
       .timeWindowAll(Time.seconds(3))
 
@@ -81,13 +62,8 @@ object SockWordCountRunConfig {
         println()
       }
     })
-
       .print()
       //.setParallelism(3)
-
-
-
-
 
     println("==================================以下为执行计划==================================")
     println("执行地址(firefox效果更好):https://flink.apache.org/visualizer")
@@ -95,13 +71,7 @@ object SockWordCountRunConfig {
     println(env.getStreamGraph.getStreamingPlanAsJSON)
     println("==================================以上为执行计划 JSON串==================================\n")
 
-
     env.execute("Socket 水印作业")
-
-
-
-
-
 
     println("结束")
 
@@ -112,9 +82,5 @@ object SockWordCountRunConfig {
   case class WordWithCount(word: String, count: Long){
     //override def toString: String = Thread.currentThread().getName + word + " : " + count
   }
-
-
-
-
 
 }

@@ -4,7 +4,6 @@ import org.apache.flink.configuration.Configuration
 
 object ConfigurationUtil {
 
-
   def getConfiguration(isDebug:Boolean = false):Configuration = {
 
     val configuration : Configuration = new Configuration()
@@ -24,7 +23,6 @@ object ConfigurationUtil {
       configuration.setInteger("heartbeat.interval",10000000)
       configuration.setInteger("heartbeat.timeout",50000000)
     }
-
 
     configuration
   }

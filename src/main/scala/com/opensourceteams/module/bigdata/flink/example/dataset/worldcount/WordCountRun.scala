@@ -16,11 +16,11 @@ object WordCountRun {
     val env : ExecutionEnvironment= ExecutionEnvironment.createLocalEnvironment(ConfigurationUtil.getConfiguration(true))
     env.setParallelism(2)
 
-    val dataSet = env.readTextFile("file:/opt/n_001_workspaces/bigdata/flink/flink-maven-scala-2/src/main/resources/data/line.txt")
+    val dataSet = env.readTextFile("D:\\workspace\\flink-maven-scala\\sink-data\\csv\\a.csv")
 
 
     import org.apache.flink.streaming.api.scala._
-    val result = dataSet.flatMap(x => x.split(" ")).map((_,1)).groupBy(0).sum(1)
+    val result = dataSet.flatMap(x => x.split(",")).map((_,1)).groupBy(0).sum(1)
 
 
 

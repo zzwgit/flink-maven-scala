@@ -9,7 +9,7 @@ object WorldCountTest {
     val env = ExecutionEnvironment.getExecutionEnvironment
 
     import org.apache.flink.api.scala._
-    val dataSet = env.fromElements("hello is   flink flink verry good","flink  flink is ok")
+    val dataSet = env.fromElements("hello is flink flink verry good","flink  flink is ok")
    // val result = dataSet.flatMap(_.toLowerCase.split(" ")).filter(_.nonEmpty).map((_,1))
       //  .groupBy(0).sum(1)
 

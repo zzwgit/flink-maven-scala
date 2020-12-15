@@ -10,13 +10,11 @@ object Run {
 
   def main(args: Array[String]): Unit = {
 
-
     val port = 1234
     // get the execution environment
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     env.setParallelism(1)  //设置并行度
     val dataStream = env.socketTextStream("localhost", port, '\n')
-
 
     val dataStream2 = dataStream.flatMap(x => x.split(" ")).map((_,1))
       .keyBy(0)

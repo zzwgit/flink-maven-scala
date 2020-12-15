@@ -12,42 +12,23 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 
 object ReadKafkaDataRun {
 
-
-
   def main(args: Array[String]): Unit = {
 
+    val configuration: Configuration = ConfigurationUtil.getConfiguration(true)
 
-    // get the execution environment
-   // val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
-
-
-    val configuration : Configuration = ConfigurationUtil.getConfiguration(true)
-
-    val env:StreamExecutionEnvironment = StreamExecutionEnvironment.createLocalEnvironment(1,configuration)
-
-
-    //env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime)
-
-
+    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.createLocalEnvironment(1, configuration)
 
     val properties = new Properties()
-    properties.setProperty("bootstrap.servers", "localhost:9092")
+    properties.setProperty("bootstrap.servers", "10.21.13.182:9092")
     // only required for Kafka 0.8
-    properties.setProperty("zookeeper.connect", "localhost:2181")
+    properties.setProperty("zookeeper.connect", "10.21.13.182:2181")
     properties.setProperty("group.id", "test")
     import org.apache.flink.streaming.api.scala._
-    val dataStream = env
-      .addSource(new FlinkKafkaConsumer[String]("topic1", new SimpleStringSchema(), properties))
+
+    env.addSource(new FlinkKafkaConsumer[String]("lzztest", new SimpleStringSchema(), properties))
       .print().setParallelism(3)
 
-
-
     env.execute("读取kafka数据")
-
-
-
-
-
 
     println("结束")
 
@@ -55,30 +36,8 @@ object ReadKafkaDataRun {
 
 
   // Data type for words with count
-  case class WordWithCount(word: String, count: Long){
+  case class WordWithCount(word: String, count: Long) {
     //override def toString: String = Thread.currentThread().getName + word + " : " + count
-  }
-
-
-  def getConfiguration(isDebug:Boolean = false):Configuration = {
-
-    val configuration : Configuration = new Configuration()
-
-    if(isDebug){
-      val timeout = "100000 s"
-      val timeoutHeartbeatPause = "1000000 s"
-      configuration.setString("akka.ask.timeout",timeout)
-      configuration.setString("akka.lookup.timeout",timeout)
-      configuration.setString("akka.tcp.timeout",timeout)
-      configuration.setString("akka.transport.heartbeat.interval",timeout)
-      configuration.setString("akka.transport.heartbeat.pause",timeoutHeartbeatPause)
-      configuration.setString("akka.watch.heartbeat.pause",timeout)
-      configuration.setInteger("heartbeat.interval",10000000)
-      configuration.setInteger("heartbeat.timeout",50000000)
-    }
-
-
-    configuration
   }
 
 

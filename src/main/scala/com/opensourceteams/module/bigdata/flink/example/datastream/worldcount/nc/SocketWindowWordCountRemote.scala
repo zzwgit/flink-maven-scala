@@ -13,10 +13,10 @@ object SocketWindowWordCountRemote {
 
     val port = 1234
     // get the execution environment
-    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.createRemoteEnvironment("standalone.com",6123,"/opt/n_001_workspaces/bigdata/flink/flink-maven-scala-2/target/flink-maven-scala-2-0.0.1.jar")
+    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.createRemoteEnvironment("standalone.com",6123,"D:\\workspace\\flink-maven-scala\\target\\flink-maven-scala-2-0.0.1.jar")
 
     // get input data by connecting to the socket
-    val dataStream = env.socketTextStream("localhost", port, '\n')
+    val dataStream = env.socketTextStream("10.21.20.186", port, '\n')
 
 
     import org.apache.flink.streaming.api.scala._

@@ -6,10 +6,7 @@ import org.apache.flink.table.api.scala._
 
 object Run {
 
-
-
   def main(args: Array[String]): Unit = {
-
 
     //得到批环境
     val env = ExecutionEnvironment.getExecutionEnvironment
@@ -19,6 +16,8 @@ object Run {
 
     //得到Table环境
     val tableEnv = TableEnvironment.getTableEnvironment(env)
+
+
     //注册table
     tableEnv.registerDataSet("user2",dataSet,'name,'age,'sex)
 

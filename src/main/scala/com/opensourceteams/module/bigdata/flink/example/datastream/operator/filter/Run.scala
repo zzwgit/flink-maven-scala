@@ -9,7 +9,6 @@ object Run {
 
   def main(args: Array[String]): Unit = {
 
-
     val port = 1234
     // get the execution environment
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
